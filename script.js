@@ -1,65 +1,71 @@
-// ------- Portfolio Data & Rendering -------
-const USERNAME = window.PORTFOLIO_USERNAME || "A-lii";
+const projects = [
+  {
+    title: "GoMental",
+    desc: "Android mental-health app for mood tracking, journaling, and resource links; built to encourage daily reflection and help-seeking.",
+    tags: ["Android", "Java", "SQLite"],
+    demo: "", // add a URL if you have one
+    code: "https://github.com/A-lii/GoMental"
+  },
+  {
+    title: "Bookstagram",
+    desc: "Social-style book catalog + share concept; organize reads, capture thoughts, and share recommendations with a clean UI.",
+    tags: ["Web", "HTML", "CSS", "JavaScript"],
+    demo: "",
+    code: "https://github.com/A-lii/Bookstagram"
+  },
+  {
+    title: "ASD Detection (Q-CHAT10 & SRS)",
+    desc: "Supervised ML pipeline exploring ASD early-screening with Q-CHAT10 & SRS: preprocessing, feature selection, model training, evaluation.",
+    tags: ["Python", "ML", "Pandas", "Scikit-learn"],
+    demo: "",
+    code: "https://github.com/A-lii/ASD-detection-using-Q-CHAT10-and-SRS"
+  },
+  {
+    title: "CNN vs ML: Animal Image Classification",
+    desc: "Comparative study: CNN vs classical ML baselines on animal images; experiments, metrics, and discussion of overfitting/generalization.",
+    tags: ["Deep Learning", "CNN", "Python"],
+    demo: "",
+    code: "https://github.com/A-lii/Comparative-Analysis-Of-CNN-and-ML-Models-for-effective-Animal-Image-Classification"
+  },
+  {
+    title: "Environmentalist Portfolio",
+    desc: "Minimal personal site concept focusing on environmental storytelling and project highlights.",
+    tags: ["HTML", "CSS", "Design"],
+    demo: "",
+    code: "https://github.com/A-lii/environmentalist-portfolio"
+  }
+];
 
-function renderProjects(repos) {
+// ---- Render cards with uniform base size and hover-to-expand description ----
+function renderProjects(list) {
   const grid = document.getElementById("projectGrid");
   grid.innerHTML = "";
-  if (!repos.length) {
-    const p = document.createElement("p");
-    p.textContent = "No public repositories found yet. Add some or make them public on GitHub.";
-    grid.appendChild(p);
-    return;
-  }
 
-  repos.slice(0, 6).forEach(r => {
+  list.forEach(p => {
     const el = document.createElement("article");
     el.className = "card";
-    const tags = [];
-    if (r.language) tags.push(r.language);
-    if (r.topics) tags.push(...r.topics.slice(0,3));
-    const homepage = r.homepage && r.homepage.trim() ? r.homepage : null;
-
     el.innerHTML = `
-      <h3>${r.name.replace(/[-_]/g,' ')}</h3>
-      <p>${r.description || "No description added yet."}</p>
-      <div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
-      <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap">
-        ${homepage ? `<a class="btn" href="${homepage}" target="_blank" rel="noopener">Demo</a>` : ""}
-        <a class="btn ghost" href="${r.html_url}" target="_blank" rel="noopener">Code</a>
+      <h3>${p.title}</h3>
+      <p class="desc">${p.desc}</p>
+      <div class="tags">${(p.tags||[]).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="card-actions">
+        ${p.demo ? `<a class="btn" href="${p.demo}" target="_blank" rel="noopener">Demo</a>` : ""}
+        <a class="btn ghost" href="${p.code}" target="_blank" rel="noopener">Code</a>
       </div>
     `;
     grid.appendChild(el);
   });
+
+  // year + theme toggle (kept from previous setup)
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const root = document.documentElement;
+  const current = localStorage.getItem("theme");
+  if (current) root.setAttribute("data-theme", current);
+  document.getElementById("themeToggle").addEventListener("click", ()=>{
+    const t = root.getAttribute("data-theme")==="dark" ? "" : "dark";
+    if (t) root.setAttribute("data-theme","dark"); else root.removeAttribute("data-theme");
+    localStorage.setItem("theme", t ? "dark" : "");
+  });
 }
 
-async function fetchRepos() {
-  try {
-    const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100`, {
-      headers: { "Accept": "application/vnd.github+json" }
-    });
-    if (!res.ok) throw new Error("GitHub API error");
-    let repos = await res.json();
-
-    repos = repos.filter(r => !r.fork); // exclude forks
-    // Sort: stars desc, then recently updated
-    repos.sort((a,b)=> (b.stargazers_count - a.stargazers_count) || (new Date(b.updated_at)-new Date(a.updated_at)));
-    renderProjects(repos);
-  } catch (e) {
-    console.error(e);
-    renderProjects([]);
-  }
-}
-
-document.getElementById("year").textContent = new Date().getFullYear();
-
-// Theme toggle
-const root = document.documentElement;
-const current = localStorage.getItem("theme");
-if (current) root.setAttribute("data-theme", current);
-document.getElementById("themeToggle").addEventListener("click", ()=>{
-  const t = root.getAttribute("data-theme")==="dark" ? "" : "dark";
-  if (t) root.setAttribute("data-theme","dark"); else root.removeAttribute("data-theme");
-  localStorage.setItem("theme", t ? "dark" : "");
-});
-
-fetchRepos();
+renderProjects(projects);
