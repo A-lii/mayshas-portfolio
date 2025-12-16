@@ -1,14 +1,14 @@
 const projects = [
   {
     title: "GoMental",
-    desc: "Android mental-health app for mood tracking, journaling, and resource links; built to encourage daily reflection and help-seeking.",
+    desc: "A mental health support platform designed to help users in Bangladesh connect with psychologists/psychiatrists, book appointments, order medicines, and get first‑aid support, all from an Android app.",
     tags: ["Android", "Java", "SQLite"],
     demo: "", // add a URL if you have one
     code: "https://github.com/A-lii/GoMental"
   },
   {
     title: "Bookstagram",
-    desc: "Social-style book catalog + share concept; organize reads, capture thoughts, and share recommendations with a clean UI.",
+    desc: "Social-style website for bookworms. It organizes reads, capture thoughts, and share recommendations with a clean UI.",
     tags: ["Web", "HTML", "CSS", "JavaScript"],
     demo: "",
     code: "https://github.com/A-lii/Bookstagram"
